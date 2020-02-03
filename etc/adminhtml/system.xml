@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * WaPoNe
+ *
+ * @category   WaPoNe
+ * @package    WaPoNe_FeedGenerator
+ * @copyright  Copyright (c) 2020 WaPoNe (https://www.fantetti.net)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+-->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="wapone" translate="label" sortOrder="400">
+            <label>WaPoNe</label>
+        </tab>
+        <section id="feed_generator" translate="label" type="text" sortOrder="11" showInDefault="1" showInWebsite="0" showInStore="0">
+            <label>Feed Generator</label>
+            <tab>wapone</tab>
+            <resource>WaPoNe_FeedGenerator::config_feedgenerator</resource>
+
+            <!-- General Parameters Group -->
+            <group id="general" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>General Parameters</label>
+                <!-- Status -->
+                <field id="status" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Enable</label>
+                    <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
+                </field>
+                <!-- Feed files directory -->
+                <field id="feed_directory" translate="label comment" type="text" sortOrder="2" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Feed files directory</label>
+                    <comment>
+                        <![CDATA[The directory where the feed files are stored.<br />
+                            <u>Remember to put '/' before the directory name</u>.
+                        ]]>
+                    </comment>
+                    <depends>
+                        <field id="feed_generator/general/status">1</field>
+                    </depends>
+                </field>
+                <!-- Feed file type -->
+                <field id="feed_type" translate="label" type="select" sortOrder="3" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Feed file type</label>
+                    <source_model>WaPoNe\FeedGenerator\Model\Config\Source\FileExtension</source_model>
+                    <depends>
+                        <field id="feed_generator/general/status">1</field>
+                    </depends>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>
