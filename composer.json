@@ -1,0 +1,25 @@
+{
+  "name": "wapone/module-feed-generator",
+  "description": "A feed generator extension for Magento 2",
+  "type": "magento2-module",
+  "license": "proprietary",
+  "version": "1.0.0",
+  "require": {
+    "php": ">=7.0"
+  },
+  "suggest": {
+    "wapone/base": "*"
+  },
+  "authors": [{
+    "name": "WaPoNe",
+    "email": "michele@fantetti.net",
+    "homepage": "https://www.fantetti.net",
+    "role": "Developer"
+  }],
+  "autoload": {
+    "files": ["registration.php"],
+    "psr-4": {
+      "WaPoNe\\FeedGenerator\\": ""
+    }
+  }
+}
