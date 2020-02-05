@@ -19,7 +19,7 @@
                 <feed_type>xml</feed_type>
             </general>
             <filters>
-                <price>0</price>
+                <price>70</price>
             </filters>
         </feed_generator>
     </default>
