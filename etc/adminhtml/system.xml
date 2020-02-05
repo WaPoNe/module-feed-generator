@@ -49,6 +49,22 @@
                     </depends>
                 </field>
             </group>
+
+            <!-- Filters Group -->
+            <group id="filters" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Filters</label>
+                <!-- Feed files directory -->
+                <field id="price" translate="label comment" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Price</label>
+                    <comment>
+                        <![CDATA[The minimum product price.]]>
+                    </comment>
+                    <depends>
+                        <field id="feed_generator/general/status">1</field>
+                    </depends>
+                </field>
+            </group>
+
         </section>
     </system>
 </config>
