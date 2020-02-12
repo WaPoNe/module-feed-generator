@@ -10,8 +10,9 @@
 
 namespace WaPoNe\FeedGenerator\Cron;
 
-use \WaPoNe\FeedGenerator\Model\FeedProducts;
 use \Magento\Framework\App\Config\ScopeConfigInterface;
+use \WaPoNe\FeedGenerator\Model\FeedProducts;
+use \WaPoNe\FeedGenerator\Model\FeedFile;
 use \Psr\Log\LoggerInterface;
 
 /**
@@ -21,16 +22,21 @@ use \Psr\Log\LoggerInterface;
 class FeedGeneration
 {
     const EXTENSION_STATUS_PATH = 'feed_generator/general/status';
+    const FEED_DIRECTORY_PATH = 'feed_generator/general/feed_directory';
     const FEED_TYPE_PATH = 'feed_generator/general/feed_type';
 
+    /**
+     * @var ScopeConfigInterface
+     */
+    protected $_scopeConfig;
     /**
      * @var FeedProducts
      */
     protected $_feedProducts;
     /**
-     * @var ScopeConfigInterface
+     * @var FeedFile
      */
-    protected $_scopeConfig;
+    protected $_feedFile;
     /**
      * @var LoggerInterface
      */
@@ -39,18 +45,21 @@ class FeedGeneration
     /**
      * FeedGeneration constructor.
      *
-     * @param FeedProducts $feedProducts
      * @param ScopeConfigInterface $scopeConfig
+     * @param FeedProducts $feedProducts
+     * @param FeedFile $feedFile
      * @param LoggerInterface $logger
      */
     public function __construct(
-        FeedProducts $feedProducts,
         ScopeConfigInterface $scopeConfig,
+        FeedProducts $feedProducts,
+        FeedFile $feedFile,
         LoggerInterface $logger
     )
     {
-        $this->_feedProducts = $feedProducts;
         $this->_scopeConfig = $scopeConfig;
+        $this->_feedProducts = $feedProducts;
+        $this->_feedFile = $feedFile;
         $this->_logger = $logger;
     }
 
@@ -66,15 +75,29 @@ class FeedGeneration
         }
 
         $this->_logger->debug("Feed Generation :: Start");
-        // get feed products
+
+        /* get feed products */
         $_feedProducts = $this->_feedProducts->getFeedProducts();
-        foreach ($_feedProducts as $_feedProduct)
-        {
-            $this->_logger->debug($_feedProduct->getSku() . ' - ' .$_feedProduct->getName() . ' -> ' .$_feedProduct->getPrice());
+
+        // feed directory
+        $feedDirectory = $this->_scopeConfig->getValue(self::FEED_DIRECTORY_PATH);
+        if (!$feedDirectory) {
+            $this->_logger->warning("Feed Directory not configured");
+            return;
+        }
+        // feed type
+        $feedType = $this->_scopeConfig->getValue(self::FEED_TYPE_PATH);
+        if (!$feedType) {
+            $this->_logger->warning("Feed Type not configured");
+            return;
         }
 
-        $feedType = $this->_scopeConfig->getValue(self::FEED_TYPE_PATH);
-        $this->_logger->debug("Feed Type: $feedType");
+        /* write feed file */
+        $ret = $this->_feedFile->writeFeedFile($feedDirectory, $feedType, $_feedProducts);
+        if (!$ret["success"]) {
+            $this->_logger->error($ret["message"]);
+            return;
+        }
 
         $this->_logger->debug("Feed Generation :: End");
     }
