@@ -57,14 +57,18 @@ class FeedProducts
             ? (int)$this->_scopeConfig->getValue(self::PRICE_FILER_PATH)
             : self::MIN_PRICE_FILER_PATH;
 
-        $collection = $this->_productCollectionFactory->create();
+        try {
+            $collection = $this->_productCollectionFactory->create();
 
-        $collection
-            ->addFieldToSelect('name', 'SKU')
-            ->addFieldToFilter('price', array('gt' => $priceFilter))
-            ->setOrder('created_at')
-            ->setPageSize(5);
+            $collection
+                ->addFieldToSelect('name', 'SKU')
+                ->addFieldToFilter('price', array('gt' => $priceFilter))
+                ->setOrder('created_at')
+                ->setPageSize(5);
+        } catch (\Exception $exception)  {
+            return array("success" => false, "message" => "Feed products collection error: " . $exception->getMessage());
+        }
 
-        return $collection;
+        return array("success" => true, "feedProducts" => $collection);
     }
 }

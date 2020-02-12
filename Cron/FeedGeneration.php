@@ -77,7 +77,12 @@ class FeedGeneration
         $this->_logger->debug("Feed Generation :: Start");
 
         /* get feed products */
-        $_feedProducts = $this->_feedProducts->getFeedProducts();
+        $ret = $this->_feedProducts->getFeedProducts();
+        if (!$ret["success"]) {
+            $this->_logger->error($ret["message"]);
+            return;
+        }
+        $_feedProducts = $ret["feedProducts"];
 
         // feed directory
         $feedDirectory = $this->_scopeConfig->getValue(self::FEED_DIRECTORY_PATH);
